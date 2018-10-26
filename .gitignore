@@ -1,0 +1,7 @@
+*.gz
+*.log
+*.hist
+*.histogram
+*.iml
+.idea
+*Identified_Barcodes.txt

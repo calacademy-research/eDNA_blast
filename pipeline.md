@@ -49,7 +49,9 @@ $ git clone https://github.com/msettles/dbcAmplicons
 $ cd dbcAmplicons
 ```
 
-Now, we need to patch dbcAmplicons (to deal with bc1 '+' bc2 format):
+Now, we need to patch dbcAmplicons (to deal with bc1 '+' bc2 format). Make these changes manually
+or use the files in ./dbcAmplicons_changes. Note that in either case, the source code may
+have since evolved, so check to ensure that there aren't any conflicts.
 
 Edit the file dbcAmplicons/sequenceReads.py. Change line 351 (may be slightly off if there are new versions) from:
 ```

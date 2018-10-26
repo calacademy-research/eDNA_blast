@@ -1,0 +1,3 @@
+These are the two changed source files from dbcApmplicons. Changes were required to support
+8 charhacter dual barcodes delineated with a '+' symbol, and they do not generalize;
+use only for this case.
