@@ -279,6 +279,12 @@ wget ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz
 ```
 The lineage generator that generates this file is [here](https://github.com/zyxue/ncbitax2lin).
 
+Note (from fixrank documentation pipeline:)
+"The "fixrank" format only outputs the results for a list of selected ranks in the following order: domain, phylum, class, order, 
+family and genus. In case of missing ranks in the lineage, the bootstrap value and the taxon name from the immediate lower rank 
+will be reported. This eliminates the gaps in the lineage, but also introduces non-existing taxon name and rank. Interpret the "fixrank" 
+results with caution."
+
  
  ### 7. Create abundance (from original pipeline):
  
@@ -286,3 +292,4 @@ The lineage generator that generates this file is [here](https://github.com/zyxu
  ~/dbcAmplicons/bin/dbcAmplicons abundance -S workshopSamplesheet.txt -O abundance_output -F 16S.fixrank  --biom > 16S.abundance.log
 
 ```
+Abundance tables are supported by phyloseq and qiime for analysis.
