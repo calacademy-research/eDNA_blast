@@ -250,11 +250,39 @@ At this point we diverge from the msettles pipeline. The 'extendedFrags' files i
     6272 -rw-r--r--  1 joe  wheel   2.3M Oct 24 19:41 SouthShore_April_16S.extendedFrags.fastq.gz
 ```
 
-### 5: Convert to fasta
+### 5: Convert to fasta and run BLAST.
 
-Fasta is what blast likes.
+Fasta is what blast likes; convert "extendedfrags" files to fasta format.
+
+Note that per ['Misunderstood parameter of NCBI BLAST impacts the correctness of bioinformatics workflows'](https://academic.oup.com/bioinformatics/advance-article-abstract/doi/10.1093/bioinformatics/bty833/5106166?redirectedFrom=fulltext) 
+we're not using max_target_seqs. You will want to post-process to remove low quality matches.
+```
+blastn -db /media/BigAssRAID/NCBI_database/nt/nt -query H3.fasta -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids qlen” -out H3.out
+```
+
+### 6: Convert blast output to a "fixrank" file. This is similar to the output produced by 
+rdpClassifier, and following this chain will make it possible rejoin the msettles pipeline
+and run phyloseq. Note that abundance measurements are not calibrated when using NCBI, proceed
+at your own risk.
 
 get lineage file from [here](ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz). 
+The format converter, "blast_filter.py", expects this to be unzipped and named "lineages.csv".
+
+usage:
+```python blast_filter.py blast-input-file fastq-file```
+
+The script uses the input fastq file from step 5 to get the names that the fasta format doesn't support.
+
+```
+cd 6.create_fixrank
+wget ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz
+```
 The lineage generator that generates this file is [here](https://github.com/zyxue/ncbitax2lin).
 
  
+ ### 7. Create abundance (from original pipeline):
+ 
+ ```
+ ~/dbcAmplicons/bin/dbcAmplicons abundance -S workshopSamplesheet.txt -O abundance_output -F 16S.fixrank  --biom > 16S.abundance.log
+
+```
