@@ -43,6 +43,8 @@ ________________
 ###0: Install the dbcAmplicons pipeline.
 
 Install prerequisites (per readme: flash2, RDPClassifier, bowtie2). Ideally, do this using bioconda.
+
+installing DBCAmplicons:
 ```
 $ cd ~/
 $ git clone https://github.com/msettles/dbcAmplicons
@@ -52,6 +54,9 @@ $ cd dbcAmplicons
 Now, we need to patch dbcAmplicons (to deal with bc1 '+' bc2 format). Make these changes manually
 or use the files in ./dbcAmplicons_changes. Note that in either case, the source code may
 have since evolved, so check to ensure that there aren't any conflicts.
+
+Note that in the this repository, these files exist with the edits already made. Look in dbcAmpliconsChanges at the 
+top level of this repository.
 
 Edit the file dbcAmplicons/sequenceReads.py. Change line 351 (may be slightly off if there are new versions) from:
 ```
@@ -91,7 +96,7 @@ To
 
 
 
-Edit the file dbcAmplicons misc.py and change line 131 from:
+Edit the file dbcAmplicons misc.py to accommodate ambiguity codes in the barcode and change line 131 from:
 ```
         basecomplement = {'A': 'T', 'a': 't', 'C': 'G', 'c': 'g', 'G': 'C', 'g': 'c', 'T': 'A', 't': 'a', 'N': 'N', 'n': 'n'}
 ```
@@ -178,6 +183,7 @@ A sample ID is a unique identifier that applies to each combination of barcode p
 |SouthShore_May_3    | 16SrDNA   | SouthShore_May   | 16S
 |stream_May_4        | COI-B     | stream_May       | COI
 |SouthShore_April_5  | COI-B     | SouthShore_April | COI
+doube check; why 3 COI-B?
 |SouthShore_May_6    | COI-B     | SouthShore_May   | COI
 |stream_May_7        | 18SrDNAV1 | stream_May       | 18S
 |SouthShore_April_8  | 18SrDNAV1 | SouthShore_April | 18S
@@ -217,7 +223,7 @@ python ~/dbcAmplicons/bin/dbcAmplicons join -t 4 -O Slashpile.intermediate/16sV1
 
 ```
 
-Handy script:
+Handy script runs this on directories named in "samples" so you don't have to run join manually 12 times:
 ```
 loci=( 16S 18S COI 28S )
 samples=( 'SouthShore_April' 'SouthShore_May' 'stream_May')
@@ -260,7 +266,8 @@ we're not using max_target_seqs. You will want to post-process to remove low qua
 blastn -db /media/BigAssRAID/NCBI_database/nt/nt -query H3.fasta -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore staxids qlen” -out H3.out
 ```
 
-### 6: Convert blast output to a "fixrank" file. This is similar to the output produced by 
+### 6: Convert blast output to a "fixrank" file. 
+This is similar to the output produced by 
 rdpClassifier, and following this chain will make it possible rejoin the msettles pipeline
 and run phyloseq. Note that abundance measurements are not calibrated when using NCBI, proceed
 at your own risk.

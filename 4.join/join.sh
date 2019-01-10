@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 loci=( 16S 18S COI 28S )
 samples=( 'SouthShore_April' 'SouthShore_May' 'stream_May')
 
