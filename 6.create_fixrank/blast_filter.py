@@ -100,7 +100,7 @@ def get_lineage(staxid):
     if staxid in lineages:
         return lineages[staxid]
     else:
-        print "Missing taxid:",staxid
+        sys.stderr.write("Missing taxid:" + str(staxid))
         return None
 
 def add_rank(lineage,i,translated_array, rank_array,prev_score):
