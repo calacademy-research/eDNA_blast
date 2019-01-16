@@ -305,4 +305,5 @@ ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz
  ~/dbcAmplicons/bin/dbcAmplicons abundance -S samplesheet.txt -O abundance_output -F 16S.fixrank  --biom > 16S.abundance.log
 
 ```
-Abundance tables are supported by phyloseq and qiime for analysis.
+Abundance tables are supported by phyloseq and qiime for analysis. The script "create_abundance.sh" is hardcoded
+to perform these steps  
