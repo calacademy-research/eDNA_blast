@@ -17,6 +17,7 @@ Inserts a section that make it possible to run this pipeline against NCBI databa
 Pipeline, starting with fastq files from Illumina, containing primers. Derived from command line summary.
 
 ###Prerequisites:
+Python scripts are written in python 2.7.c
 
 Identify your per-sample barcodes. This pipeline is set up for dual ended bardcodes. 
 Do not strip them prior to running this pipeline. In this example, we have three samples:
@@ -144,7 +145,7 @@ Personally, I place these in the “metadata” subdirectory of my working direc
 
 #### PrimerTable.txt TSV table maps primers to loci. Note that the filename is arbitrary.
 
-Note that this should be a proper TSV table; the formatting below is just for ease of reading.
+Note that this should be a proper TSV table; the formatting below is for ease of reading.
 ​                                 
 Lists forward and reverse primers for each loci.
 
@@ -170,7 +171,7 @@ We expect 8 base barcodes.
 |SouthShore_May                    |  ATATTGGC     |    ACTGCATA   
 |SouthShore_April                  |  ATATTGGC     |    GTAAGGAG   
              
-#### sampleSheet.txt Defines the relatinoship between sample ID, barcodes, primer pair ID, and loci.
+#### sampleSheet.txt Defines the relationship between sample ID, barcodes, primer pair ID, and loci.
 
 A sample ID is a unique identifier that applies to each combination of barcode pairs (Pair_ID) x Sample.
 "ProjectID" is the loci. In the example below, there are two primers that map to the COI loci.
@@ -183,7 +184,6 @@ A sample ID is a unique identifier that applies to each combination of barcode p
 |SouthShore_May_3    | 16SrDNA   | SouthShore_May   | 16S
 |stream_May_4        | COI-B     | stream_May       | COI
 |SouthShore_April_5  | COI-B     | SouthShore_April | COI
-doube check; why 3 COI-B?
 |SouthShore_May_6    | COI-B     | SouthShore_May   | COI
 |stream_May_7        | 18SrDNAV1 | stream_May       | 18S
 |SouthShore_April_8  | 18SrDNAV1 | SouthShore_April | 18S
@@ -200,9 +200,9 @@ doube check; why 3 COI-B?
 ### 3: Preprocess
 Run the preprocess step on the split files.
 ```
-python ~/dbcAmplicons/bin/dbcAmplicons preprocess -B ../2.metadata/dbcBarcodeLookupTable.txt -P ../2.metadata/PrimerTable.txt -S ../2.metadata/workshopSamplesheet.txt -O SouthShore_April.intermediate -1 ../1.convert/SouthShore_April/DBCreads_R1.fastq.gz --debug
-python ~/dbcAmplicons/bin/dbcAmplicons preprocess -B ../2.metadata/dbcBarcodeLookupTable.txt -P ../2.metadata/PrimerTable.txt -S ../2.metadata/workshopSamplesheet.txt -O SouthShore_May.intermediate -1 ../1.convert/SouthShore_May/DBCreads_R1.fastq.gz --debug
-python ~/dbcAmplicons/bin/dbcAmplicons preprocess -B ../2.metadata/dbcBarcodeLookupTable.txt -P ../2.metadata/PrimerTable.txt -S ../2.metadata/workshopSamplesheet.txt -O stream_May.intermediate -1 ../1.convert/stream_May/DBCreads_R1.fastq.gz --debug
+python ~/dbcAmplicons/bin/dbcAmplicons preprocess -B ../2.metadata/dbcBarcodeLookupTable.txt -P ../2.metadata/PrimerTable.txt -S ../2.metadata/samplesheet.txt -O SouthShore_April.intermediate -1 ../1.convert/SouthShore_April/DBCreads_R1.fastq.gz --debug
+python ~/dbcAmplicons/bin/dbcAmplicons preprocess -B ../2.metadata/dbcBarcodeLookupTable.txt -P ../2.metadata/PrimerTable.txt -S ../2.metadata/samplesheet.txt -O SouthShore_May.intermediate -1 ../1.convert/SouthShore_May/DBCreads_R1.fastq.gz --debug
+python ~/dbcAmplicons/bin/dbcAmplicons preprocess -B ../2.metadata/dbcBarcodeLookupTable.txt -P ../2.metadata/PrimerTable.txt -S ../2.metadata/samplesheet.txt -O stream_May.intermediate -1 ../1.convert/stream_May/DBCreads_R1.fastq.gz --debug
 ```
 Check the outputs to ensure that the barcodes are matching.
 
@@ -272,18 +272,21 @@ rdpClassifier, and following this chain will make it possible rejoin the msettle
 and run phyloseq. Note that abundance measurements are not calibrated when using NCBI, proceed
 at your own risk.
 
-get lineage file from [here](ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz). 
-The format converter, "blast_filter.py", expects this to be unzipped and named "lineages.csv".
+get the most current lineage file from [here](https://gitlab.com/zyxue/ncbitax2lin-lineages/tree/master). 
+The format converter, "blast_filter.py", expects this to be unzipped and named "lineages.csv". Using a softlink will
+help keep track of whether you're using the most recent file.
+
+```ln -s ./lineages.csv ./lineages-2019-01-07.csv```
 
 usage:
 ```python blast_filter.py blast-input-file fastq-file```
 
+example:
+
+```python blast_filter.py ../5.blast/COI.blast_results ../4.join/COI.joined.extendedFrags.fastq > COI.fixrank```
+
 The script uses the input fastq file from step 5 to get the names that the fasta format doesn't support.
 
-```
-cd 6.create_fixrank
-wget ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz
-```
 The lineage generator that generates this file is [here](https://github.com/zyxue/ncbitax2lin).
 
 Note (from fixrank documentation pipeline:)
@@ -292,11 +295,14 @@ family and genus. In case of missing ranks in the lineage, the bootstrap value a
 will be reported. This eliminates the gaps in the lineage, but also introduces non-existing taxon name and rank. Interpret the "fixrank" 
 results with caution."
 
+Note: 
+ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz
+
  
  ### 7. Create abundance (from original pipeline):
  
  ```
- ~/dbcAmplicons/bin/dbcAmplicons abundance -S workshopSamplesheet.txt -O abundance_output -F 16S.fixrank  --biom > 16S.abundance.log
+ ~/dbcAmplicons/bin/dbcAmplicons abundance -S samplesheet.txt -O abundance_output -F 16S.fixrank  --biom > 16S.abundance.log
 
 ```
 Abundance tables are supported by phyloseq and qiime for analysis.
