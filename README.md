@@ -306,4 +306,10 @@ ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz
 
 ```
 Abundance tables are supported by phyloseq and qiime for analysis. The script "create_abundance.sh" is hardcoded
-to perform these steps  
+to perform these steps.
+
+ ### 8. Optional: Check primer performance by generating a taxonomy based tree based on staxids. 
+ 
+ run treemerge.py. Check comments for inputs. To generate staxids, modify blast_filter.py (step 6). Change
+ generate_fixrank_output funciton to output only the taxid, one per line. Redirect to the input files for treemerge.py.
+ 

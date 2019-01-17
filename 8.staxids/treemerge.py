@@ -63,6 +63,7 @@ def layout(node):
             for locus in loci_list:
                 primer_list+="["+locus+"]"
             node.name = node.sci_name + " " + primer_list
+            print (node.name)
     else:
         text = node.rank +":" +node.sci_name
         F = TextFace(text, tight_text=True)

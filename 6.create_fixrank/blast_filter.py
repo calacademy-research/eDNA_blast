@@ -146,6 +146,8 @@ def generate_fixrank_output(lineage,taxid,qlen,id):
 
     return fixrank
 
+def generate_staxid_output(taxid):
+    print taxid
 
 
 def main():
@@ -171,6 +173,7 @@ def main():
        # print line
             if lineage is not None:
                 print generate_fixrank_output(lineage,staxid,qlen,line.strip().split()[0])
+                #generate_fixrank_output(staxid)
                 # print lineage
                 # print line
 
