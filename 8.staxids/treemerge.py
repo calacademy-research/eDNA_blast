@@ -4,6 +4,7 @@
 # and colors accordingly.
 
 #input: "18S.staxids" and etc for each locus defined in "loci" array below.
+# one taxid per line, one file per probe, probes listed in the array "loci" below.
 
 #uncomment the "update_taxonomy_database" line for first run, that pulls current lineage info from NCBI.
 
