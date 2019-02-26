@@ -303,8 +303,11 @@ ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz
  
  ```
  ~/dbcAmplicons/bin/dbcAmplicons abundance -S samplesheet.txt -O abundance_output -F 16S.fixrank  --biom > 16S.abundance.log
-
 ```
+From the [docs](https://ucdavis-bioinformatics-training.github.io/2017-September-Microbial-Community-Analysis-Workshop/thursday/dbcAmplicons_commands.html):
+"dbcAmplicons abundance command above (with –biom) produces four files: abundance, proportions, tax_info and biom files. " 
+
+
 Abundance tables are supported by phyloseq and qiime for analysis. The script "create_abundance.sh" is hardcoded
 to perform these steps.
 
